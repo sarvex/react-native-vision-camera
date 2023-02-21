@@ -33,7 +33,19 @@ type RefType = React.Component<NativeCameraViewProps> & Readonly<NativeMethods>;
 // NativeModules automatically resolves 'CameraView' to 'CameraViewModule'
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const CameraModule = NativeModules.CameraView;
-if (CameraModule == null) console.error("Camera: Native Module 'CameraView' was null! Did you run pod install?");
+if (CameraModule == null) {
+  switch (Platform.OS) {
+    case 'ios':
+      console.error("Camera: Native Module 'CameraView' was null! Did you run pod install and rebuilt your app?");
+      break;
+    case 'android':
+      console.error("Camera: Native Module 'CameraView' was null! Did you rebuild your app?");
+      break;
+    default:
+      console.error(`Camera: Native Module 'CameraView' was null! VisionCamera is not yet available on ${Platform.OS}.`);
+      break;
+  }
+}
 
 //#region Camera Component
 /**
